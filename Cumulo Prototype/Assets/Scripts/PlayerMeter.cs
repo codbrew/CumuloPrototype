@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class PlayerMeter : MonoBehaviour
 {
     public float maxMeter = 100;
-    public static float currentMeter;
+    public float currentMeter;
     public Slider meter;
     public float addMeter = 25;
     

@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class CharacterMovement : MonoBehaviour
 {
+    //Physics Variables
+    //public float fallMultiplyer = 2.5f;
+    //public float lowJumpMultiplier = 2f;
 
     //Currency Variables
     public int points = 0;
@@ -16,6 +19,10 @@ public class CharacterMovement : MonoBehaviour
     public float bckMvSpeed = -2f;
     public float jumpHeight = 2f;
 
+    //Jumping Variables
+    private float jumpTimeCounter;
+    public float jumpTime;
+    private bool isJumping;
 
     //tunnel exit variables
     public Transform spawning;
@@ -24,6 +31,8 @@ public class CharacterMovement : MonoBehaviour
     public float startTime;
     private float distance;
     public  float movementTimer = 0;
+    public float addedGravity = 2f;
+    
 
     //Access to Projectile Spawn
     public Transform projectileSpawn;
@@ -31,6 +40,12 @@ public class CharacterMovement : MonoBehaviour
     //Rotation Values
     private bool facingRight = true;
 
+    //Ground Check
+    public Transform groundCheck;
+    private bool isGrounded;
+
+    //Game Manager
+    public GameManager gameManager;
 
     
     
@@ -115,19 +130,57 @@ public class CharacterMovement : MonoBehaviour
             FlipPlayer();
             //Debug.Log("Player Flipped Backward");
         }
-    
+
 
         //jump
-        if (Input.GetKey("space"))
+
+
+        if (Input.GetKeyDown("space") && isGrounded)
         {
+            isJumping = true;
+            jumpTimeCounter = jumpTime;
+            
             rb.velocity = new Vector2(rb.velocity.x, jumpHeight);
-            Debug.Log("jump");
+        }
+
+            if (jumpTimeCounter > 0 && isJumping == true)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, jumpHeight);
+                Debug.Log("jump");
+                jumpTimeCounter -= Time.deltaTime;
+            
+
+        }
+            else
+            {
+                isJumping = false;
+            }
+
+        if (Input.GetKeyUp("space"))
+        {
+            isJumping = false;
+        }
+        
+        if(rb.velocity.y > 0)
+        {
+            GetComponent<Rigidbody>().AddForce(Physics.gravity * addedGravity, ForceMode.Acceleration);
+        }
+        
+
+        
+
+        if (Physics.Linecast(transform.position, groundCheck.position, 1 << LayerMask.NameToLayer("Ground"))){
+            isGrounded = true;
+        }
+        else
+        {
+            isGrounded = false;
         }
 
 
-       
-        
-       
+
+
+
     }
 
     private void FlipPlayer()
@@ -154,8 +207,9 @@ public class CharacterMovement : MonoBehaviour
         {
             case "Death Zone1":
 
-                PlayerDeath();
-                CurrencyText.currencyValue = 0;
+               
+                gameManager.GetComponent<GameManager>().EndGame();
+                
 
                 break;
 
@@ -163,12 +217,7 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
-    public void PlayerDeath()
-    {
-        transform.position = spawning.transform.position;
-        movementTimer = 0;
-        Debug.Log("player has died");
-    }
+  
 
  
 }

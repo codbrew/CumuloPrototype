@@ -8,7 +8,9 @@ public class AbilityLightning : MonoBehaviour
     public Transform spawnLocation;
     public GameObject projectilePF;
     
+    public GameObject player;
     public Slider meter;
+    public float decreaseMeter = 0.5f;
     
     
 
@@ -26,8 +28,10 @@ public class AbilityLightning : MonoBehaviour
         {
            
             ShootProjectile();
-            meter.value = 0;
+            player.GetComponent<PlayerMeter>().currentMeter -= decreaseMeter * Time.deltaTime;
+            player.GetComponent<PlayerMeter>().meter.value -= decreaseMeter * Time.deltaTime;
         }
+
     }
 
     private void ShootProjectile()

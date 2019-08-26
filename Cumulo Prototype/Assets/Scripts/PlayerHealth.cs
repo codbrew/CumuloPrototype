@@ -11,6 +11,7 @@ public class PlayerHealth : MonoBehaviour
     private float currentHealth;
     public Slider healthBar;
     public float damageToPlayer = 25;
+    public GameManager gameManager;
     
     
     // Start is called before the first frame update
@@ -37,10 +38,10 @@ public class PlayerHealth : MonoBehaviour
 
         if (currentHealth <= 0)
         {
-            
-            player.GetComponent<CharacterMovement>().PlayerDeath();
+
             ResetHealth();
             healthBar.value = CalculateHealth();
+            gameManager.GetComponent<GameManager>().EndGame();
             Debug.Log("Player was Killed");
         }
     }

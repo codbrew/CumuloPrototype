@@ -11,7 +11,7 @@ public class ProjectileBehavior : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        rb.AddForce(transform.right * moveSpeed *Time.deltaTime);
+        rb.AddForce((transform.right * Time.deltaTime)* moveSpeed);
      
         
     }
